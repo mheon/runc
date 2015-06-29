@@ -13,6 +13,7 @@ import (
 	"github.com/opencontainers/runc/libcontainer/cgroups"
 	"github.com/opencontainers/runc/libcontainer/configs"
 	"github.com/opencontainers/runc/libcontainer/devices"
+	"github.com/opencontainers/runc/libcontainer/seccomp"
 )
 
 type Spec struct {
@@ -28,6 +29,7 @@ type Linux struct {
 	Namespaces       []Namespace            `json:"namespaces"`
 	Capabilities     []string               `json:"capabilities"`
 	Devices          []string               `json:"devices"`
+	Seccomp          *seccomp.Config        `json:"seccomp_config,omitempty"`
 }
 
 type Namespace struct {
@@ -151,11 +153,12 @@ func createLibcontainerConfig(spec *Spec) (*configs.Config, error) {
 		rootfsPath = filepath.Join(cwd, rootfsPath)
 	}
 	config := &configs.Config{
-		Rootfs:       rootfsPath,
-		Capabilities: spec.Linux.Capabilities,
-		Readonlyfs:   spec.Root.Readonly,
-		Hostname:     spec.Hostname,
-		Privatefs:    true,
+		Rootfs:        rootfsPath,
+		Capabilities:  spec.Linux.Capabilities,
+		Readonlyfs:    spec.Root.Readonly,
+		Hostname:      spec.Hostname,
+		Privatefs:     true,
+		SeccompConfig: spec.Linux.Seccomp,
 	}
 	for _, ns := range spec.Linux.Namespaces {
 		t, exists := namespaceMapping[ns.Type]

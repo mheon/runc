@@ -49,6 +49,10 @@
 		{
 			"ImportPath": "github.com/syndtr/gocapability/capability",
 			"Rev": "e55e5833692b49e49a0073ad5baf7803f21bebf4"
-		}
+		},
+		{
+			"ImportPath": "github.com/seccomp/libseccomp_golang",
+			"Rev": "5375b50019002c8d93d12ea07eefce6595037d75",
+		},
 	]
 }

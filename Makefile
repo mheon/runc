@@ -1,6 +1,6 @@
 all:
 	go get github.com/tools/godep
-	godep go build -o runc .
+	godep go build -tags seccomp -o runc .
 
 install:
 	cp runc /usr/local/bin/runc
