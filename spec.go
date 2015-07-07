@@ -175,11 +175,12 @@ func createLibcontainerConfig(spec *specs.LinuxSpec) (*configs.Config, error) {
 		rootfsPath = filepath.Join(cwd, rootfsPath)
 	}
 	config := &configs.Config{
-		Rootfs:       rootfsPath,
-		Capabilities: spec.Linux.Capabilities,
-		Readonlyfs:   spec.Root.Readonly,
-		Hostname:     spec.Hostname,
-		Privatefs:    true,
+		Rootfs:        rootfsPath,
+		Capabilities:  spec.Linux.Capabilities,
+		Readonlyfs:    spec.Root.Readonly,
+		Hostname:      spec.Hostname,
+		Privatefs:     true,
+		SeccompConfig: spec.Linux.Seccomp,
 	}
 	for _, ns := range spec.Linux.Namespaces {
 		t, exists := namespaceMapping[ns.Type]

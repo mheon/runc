@@ -2,6 +2,8 @@
 
 package specs
 
+import "github.com/opencontainers/runc/libcontainer/seccomp"
+
 // LinuxSpec is the full specification for linux containers.
 type LinuxSpec struct {
 	Spec
@@ -28,6 +30,8 @@ type Linux struct {
 	Capabilities []string `json:"capabilities"`
 	// Devices are a list of device nodes that are created and enabled for the container.
 	Devices []string `json:"devices"`
+	// Seccomp holds information on system calls to be restricted in the container
+	Seccomp *seccomp.Config `json:"seccomp_config,omitempty"`
 }
 
 // User specifies linux specific user and group information for the container's
