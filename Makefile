@@ -4,7 +4,8 @@ TEST_DOCKERFILE=test_Dockerfile
 export GOPATH:=$(CURDIR)/Godeps/_workspace:$(GOPATH)
 
 all:
-	go build -o runc .
+	go get github.com/tools/godep
+	godep go build -tags seccomp -o runc .
 
 lint:
 	go get golang.org/x/tools/cmd/vet
