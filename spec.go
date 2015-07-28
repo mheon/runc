@@ -127,6 +127,31 @@ var specCommand = cli.Command{
 						Swappiness: -1,
 					},
 				},
+				Seccomp: &configs.Seccomp{
+					DefaultAction: configs.Allow,
+					Syscalls: []*configs.Syscall{
+						{
+							Name: "open_by_handle_at",
+							Action: configs.Errno,
+						},
+						{
+							Name: "socket",
+							Action: configs.Errno,
+							Args: []*configs.Arg{
+								{
+									Index: 0,
+									Op: configs.EqualTo,
+									Value: 1,
+								},
+								{
+									Index: 0,
+									Op: configs.GreaterThanOrEqualTo,
+									Value: 18,
+								},
+							},
+						},
+					},
+				},
 			},
 		}
 		data, err := json.MarshalIndent(&spec, "", "\t")
@@ -191,6 +216,7 @@ func createLibcontainerConfig(spec *specs.LinuxSpec) (*configs.Config, error) {
 		Readonlyfs:   spec.Root.Readonly,
 		Hostname:     spec.Hostname,
 		Privatefs:    true,
+		Seccomp:      spec.Linux.Seccomp,
 	}
 	for _, ns := range spec.Linux.Namespaces {
 		t, exists := namespaceMapping[ns.Type]
