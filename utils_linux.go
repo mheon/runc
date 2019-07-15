@@ -46,11 +46,31 @@ func loadFactory(context *cli.Context) (libcontainer.Factory, error) {
 	if rootlessCg {
 		cgroupManager = libcontainer.RootlessCgroupfs
 	}
+
+	if context.GlobalBool("systemd-cgroup") && context.GlobalIsSet("cgroup-manager") {
+		return nil, fmt.Errorf("the systemd-cgroup and cgroup-manager flags conflict")
+	}
 	if context.GlobalBool("systemd-cgroup") {
 		if systemd.UseSystemd() {
 			cgroupManager = libcontainer.SystemdCgroups
 		} else {
 			return nil, fmt.Errorf("systemd cgroup flag passed, but systemd support for managing cgroups is not available")
+		}
+	}
+	if context.GlobalIsSet("cgroup-manager") {
+		switch context.GlobalString("cgroup-manager") {
+		case "cgroupfs":
+			cgroupManager = libcontainer.Cgroupfs
+		case "systemd":
+			if systemd.UseSystemd() {
+				cgroupManager = libcontainer.SystemdCgroups
+			} else {
+				return nil, fmt.Errorf("systemd cgroups requested, but systemd support for managing cgroups is not available")
+			}
+		case "disabled":
+			cgroupManager = libcontainer.NoCgroups
+		default:
+			return nil, fmt.Errorf("invalid cgroup manager %s specified - allowed values are 'cgroupfs', 'disabled', 'systemd'")
 		}
 	}
 

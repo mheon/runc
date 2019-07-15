@@ -110,6 +110,11 @@ func main() {
 			Usage: "enable systemd cgroup support, expects cgroupsPath to be of form \"slice:prefix:name\" for e.g. \"system.slice:runc:434234\"",
 		},
 		cli.StringFlag{
+			Name:  "cgroup-manager",
+			Value: "cgroupfs",
+			Usage: "specify which cgroup manager will be used ('cgroupfs', 'disabled', 'systemd')",
+		},
+		cli.StringFlag{
 			Name:  "rootless",
 			Value: "auto",
 			Usage: "ignore cgroup permission errors ('true', 'false', or 'auto')",

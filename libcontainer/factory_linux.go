@@ -89,6 +89,17 @@ func RootlessCgroupfs(l *LinuxFactory) error {
 	return nil
 }
 
+// NoCgroups is an options func to configure a LinuxFactory to return containers
+// that do not create their own cgroups.
+func NoCgroups(l *LinuxFactory) error {
+	nullCgroupsManager, err := cgroups.NewNullCgroupsManager()
+	if err != nil {
+		return err
+	}
+	l.NewCgroupsManager = nullCgroupsManager
+	return nil
+}
+
 // IntelRdtfs is an options func to configure a LinuxFactory to return
 // containers that use the Intel RDT "resource control" filesystem to
 // create and manage Intel RDT resources (e.g., L3 cache, memory bandwidth).
